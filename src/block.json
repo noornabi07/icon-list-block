@@ -187,9 +187,9 @@
 		"themeOptions": {
 			"type": "object",
 			"default": {
-				"isRightIcon": true,
 				"rightIconColor": "#4527A4",
-				"isBadge": true
+				"isBadge": false,
+				"isUrlIcon": false
 			}
 		},
 		"headerSep": {
@@ -296,7 +296,10 @@
 			"preview": true
 		}
 	},
-	"editorScript": "file:./index.js",
+	"editorScript": [
+		"file:./index.js",
+		"wp-api"
+	],
 	"editorStyle": "file:./index.css",
 	"style": [
 		"file:./view.css",

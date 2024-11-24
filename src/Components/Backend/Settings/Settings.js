@@ -1,22 +1,28 @@
 import { __ } from '@wordpress/i18n';
 import { InspectorControls, BlockControls, AlignmentToolbar } from '@wordpress/block-editor';
-import { PanelBody, PanelRow, TabPanel, RangeControl, TextControl, ToggleControl, __experimentalUnitControl as UnitControl, Button, Dashicon, SelectControl } from '@wordpress/components';
+import { PanelBody, PanelRow, TabPanel, RangeControl, TextControl, ToggleControl, __experimentalUnitControl as UnitControl, Button, Dashicon } from '@wordpress/components';
+import { useState } from "react";
 
 // Settings Components
-import { Label, Background, ColorControl, ColorsControl, HelpPanel, IconControl, SeparatorControl, ShadowControl, Typography } from '../../../../../bpl-tools/Components';
-import { BorderControl, SpaceControl } from '../../../../../bpl-tools/Components/Deprecated';
+import { Label, Background, ColorControl, ColorsControl, HelpPanel, IconControl, SeparatorControl, Typography } from '../../../../../bpl-tools/Components';
+import { BorderControl, ShadowControl, SpaceControl } from '../../../../../bpl-tools/Components/Deprecated';
 import { gearIcon } from '../../../../../bpl-tools/utils/icons';
 import { pxUnit, perUnit, emUnit } from '../../../../../bpl-tools/utils/options';
+import { AboutProModal, BControlPro, SelectControlPro } from '../../../../../bpl-tools/ProControls';
 
 import { generalStyleTabs } from '../../../utils/options';
 import { produce } from 'immer';
 
-const Settings = ({ attributes, setAttributes, updateList, activeIndex, setActiveIndex }) => {
+const Settings = ({ attributes, setAttributes, updateList, activeIndex, setActiveIndex, isPremium }) => {
 	const { isTitle, isDesc, lists, isListLinkInNewTab, alignment, width, background, padding, border, shadow, position, headerMargin, titleColor, descTypo, descColor, isHeaderSep, headerSep, listIconSize, listIconColors, listTextTypo, listTextColor, themes, descriptionTypo, descriptionColor, themeOptions, featureThemeStyles, badgeStyles, badgeTextTypo, theme5Styles, featureTypo, listItemsBgColor } = attributes;
 
-	const { rightIconColor, isBadge } = themeOptions;
+	const { rightIconColor, isBadge, isUrlIcon } = themeOptions;
 	const { featureIconSize } = featureThemeStyles;
 	const { iconPulsColor, iconBgBlur } = theme5Styles;
+
+	const [isProModalOpen, setIsProModalOpen] = useState(false);
+
+	const premiumProps = { isPremium, setIsProModalOpen };
 
 	const { theme } = themes;
 
@@ -78,11 +84,19 @@ const Settings = ({ attributes, setAttributes, updateList, activeIndex, setActiv
 							<TextControl value={link} onChange={val => updateList('link', val)} />
 							<small>{__('If you want to link the list, enter the link here. Otherwise, leave as blank.', 'icon-list')}</small>
 
+
+							{/* Premium TextControl for Badge Title */}
 							{
 								"theme4" === theme &&
 								<>
 									<Label>{__(`Badge Title ${activeIndex + 1}:`, 'icon-list')}</Label>
-									<TextControl value={badgeTitle} onChange={val => updateList('badgeTitle', val)} placeholder={__("Type your badge", "icon-list")} />
+									<BControlPro
+										value={badgeTitle}
+										onChange={val => updateList('badgeTitle', val)}
+										placeholder={__("Type your badge", "icon-list")}
+										Component={TextControl}
+										{...premiumProps}
+									/>
 								</>
 
 							}
@@ -100,34 +114,63 @@ const Settings = ({ attributes, setAttributes, updateList, activeIndex, setActiv
 					</PanelBody>
 
 					<PanelBody className='bplPanelBody' title={__('Themes', 'icon-list')} initialOpen={false}>
-						<PanelRow>
-							<h3>Select your Theme:</h3>
-							<SelectControl
-								value={themes.theme} // This sets the initial value
-								options={[
-									{ label: 'Default', value: 'default' },
-									{ label: 'Theme 2', value: 'theme2' },
-									{ label: 'Theme 3', value: 'theme3' },
-									{ label: 'Theme 4', value: 'theme4' },
-									{ label: 'Theme 5', value: 'theme5' },
-								]}
-								onChange={(selectedTheme) => setAttributes({ themes: { ...themes, theme: selectedTheme } })}
-							/>
-						</PanelRow>
+						<SelectControlPro
+							label={__("Select Theme:", "icon-list")}
+							labelPosition='left'
+							value={themes.theme} // This sets the initial value
+							options={[
+								{ label: 'Default', value: 'default' },
+								{ label: 'Theme 2', value: 'theme2' },
+								{ label: 'Theme 3', value: 'theme3' },
+								{ label: 'Theme 4', value: 'theme4' },
+								{ label: 'Theme 5', value: 'theme5' },
+							]}
+							onChange={(selectedTheme) => setAttributes({ themes: { ...themes, theme: selectedTheme } })}
+							{...premiumProps}
+							proValues={['theme2', 'theme3', 'theme4', 'theme5']}
+						/>
 					</PanelBody>
 
 
 					<PanelBody className='bPlPanelBody' title={__('List Settings', 'icon-list')} initialOpen={false}>
 						<ToggleControl label={__('Open list link in new tab', 'icon-list')} checked={isListLinkInNewTab} onChange={val => setAttributes({ isListLinkInNewTab: val })} />
 
+
+						{/* Premium toggleControl for Show Badge */}
 						{
 							"theme4" === theme && <>
-								<ToggleControl className='mt10' label={__('List Badge', 'icon-list')} checked={isBadge} onChange={(val) => {
-									const newVale = produce(themeOptions, draft => {
-										draft.isBadge = val
-									})
-									setAttributes({ themeOptions: newVale })
-								}} />
+								<BControlPro
+									className='mt10'
+									label={__('Show List Badge', 'icon-list')}
+									checked={isBadge}
+									onChange={(val) => {
+										const newVale = produce(themeOptions, draft => {
+											draft.isBadge = val
+										})
+										setAttributes({ themeOptions: newVale })
+									}}
+									Component={ToggleControl}
+									{...premiumProps}
+								/>
+							</>
+						}
+
+						{/* Premium toggleControl for Show URL */}
+						{
+							("theme4" === theme || "theme2" === theme) && <>
+								<BControlPro
+									className='mt10'
+									label={__('Show URL Icon', 'icon-list')}
+									checked={isUrlIcon}
+									onChange={val => {
+										const newIcon = produce(themeOptions, draft => {
+											draft.isUrlIcon = val
+										})
+										setAttributes({ themeOptions: newIcon })
+									}}
+									Component={ToggleControl}
+									{...premiumProps}
+								/>
 							</>
 						}
 					</PanelBody>
@@ -193,7 +236,16 @@ const Settings = ({ attributes, setAttributes, updateList, activeIndex, setActiv
 
 					<PanelBody className='bPlPanelBody' title={__('List', 'icon-list')} initialOpen={false}>
 
-						<Background className='mt10' label={__('List Items Background:', 'icon-list')} value={listItemsBgColor} onChange={val => setAttributes({ listItemsBgColor: val })} defaults={{ color: '#0000' }} />
+						{/* Premium Background for All List item Background */}
+						<BControlPro
+							className='mt10'
+							label={__('List Items Background:', 'icon-list')}
+							value={listItemsBgColor}
+							onChange={val => setAttributes({ listItemsBgColor: val })}
+							defaults={{ color: '#0000' }}
+							Component={Background}
+							{...premiumProps}
+						/>
 
 
 						{
@@ -204,6 +256,7 @@ const Settings = ({ attributes, setAttributes, updateList, activeIndex, setActiv
 								<ColorsControl label={__('Icon Colors', 'icon-list')} value={listIconColors} onChange={val => setAttributes({ listIconColors: val })} defaults={{ color: '#fff', bg: '#4527A4' }} />
 							</>
 						}
+
 
 						{
 							"default" === theme && <Typography label={__('Text Typography:', 'icon-list')} value={listTextTypo} onChange={val => setAttributes({ listTextTypo: val })} defaults={{ fontSize: { desktop: 18, tablet: 15, mobile: 15 }, fontWeight: 500 }} />
@@ -229,18 +282,34 @@ const Settings = ({ attributes, setAttributes, updateList, activeIndex, setActiv
 							("theme2" === theme || "theme4" === theme) && <ColorControl label={__('Description Color:', 'icon-list')} value={descriptionColor} onChange={val => setAttributes({ descriptionColor: val })} defaultColor='#828282' />
 						}
 
+
+						{/* Premium ColorControl & Typography Control for Badge */}
 						{
 							("theme4" === theme && isBadge) && <>
-								<Typography label={__('Badge Title Typography:', 'icon-list')} value={badgeTextTypo} onChange={val => setAttributes({ badgeTextTypo: val })} defaults={{ fontSize: { desktop: 14, tablet: 12, mobile: 10 }, fontWeight: 500 }} />
+								<BControlPro
+									label={__('Badge Typography:', 'icon-list')}
+									value={badgeTextTypo}
+									onChange={val => setAttributes({ badgeTextTypo: val })}
+									defaults={{ fontSize: { desktop: 14, tablet: 12, mobile: 10 }, fontWeight: 500 }}
+									Component={Typography}
+									{...premiumProps}
+								/>
 
-								<ColorsControl label={__('Badge Colors', 'icon-list')} value={badgeStyles} onChange={val => setAttributes({ badgeStyles: val })} defaults={{ color: '#fff', bg: '#4527A4' }} />
+								<BControlPro
+									label={__('Badge Colors', 'icon-list')}
+									value={badgeStyles}
+									onChange={val => setAttributes({ badgeStyles: val })}
+									defaults={{ color: '#fff', bg: '#4527A4' }}
+									Component={ColorsControl}
+									{...premiumProps}
+								/>
 							</>
 						}
 
 
 						{
 							("theme2" === theme || "theme4" === theme) &&
-							<ColorControl label={__('Right Icon Color:', 'icon-list')} value={rightIconColor} onChange={(val) => {
+							<ColorControl label={__('URL Icon Color:', 'icon-list')} value={rightIconColor} onChange={(val) => {
 								const newVal = produce(themeOptions, draft => {
 									draft.rightIconColor = val
 								})
@@ -293,19 +362,35 @@ const Settings = ({ attributes, setAttributes, updateList, activeIndex, setActiv
 								<ColorControl label={__('Description Color:', 'icon-list')} value={descriptionColor} onChange={val => setAttributes({ descriptionColor: val })} defaultColor='#828282' />
 
 
-								<ColorControl label={__('Icon Pulse Color:', 'icon-list')} value={iconPulsColor} onChange={val => {
-									const newPulse = produce(theme5Styles, draft => {
-										draft.iconPulsColor = val;
-									})
-									setAttributes({ theme5Styles: newPulse })
-								}} defaultColor='linear-gradient(135deg, #3b82f6, #8b5cf6)' />
+								{/* Premium ColorControl for Theme 5 Icon Puls animate Color */}
+								<BControlPro
+									label={__('Icon Pulse Color:', 'icon-list')}
+									value={iconPulsColor}
+									onChange={val => {
+										const newPulse = produce(theme5Styles, draft => {
+											draft.iconPulsColor = val;
+										})
+										setAttributes({ theme5Styles: newPulse })
+									}}
+									defaultColor='linear-gradient(135deg, #3b82f6, #8b5cf6)'
+									Component={ColorControl}
+									{...premiumProps}
+								/>
 
-								<ColorControl label={__('Icon Blur Background:', 'icon-list')} value={iconBgBlur} onChange={val => {
-									const newBlur = produce(theme5Styles, draft => {
-										draft.iconBgBlur = val;
-									})
-									setAttributes({ theme5Styles: newBlur })
-								}} defaultColor='linear-gradient(135deg, #3b82f6, #8b5cf6)' />
+								{/* Premium ColorControl for theme 5 Icon Blur Background Color */}
+								<BControlPro
+									label={__('Icon Blur Background:', 'icon-list')}
+									value={iconBgBlur}
+									onChange={val => {
+										const newBlur = produce(theme5Styles, draft => {
+											draft.iconBgBlur = val;
+										})
+										setAttributes({ theme5Styles: newBlur })
+									}}
+									defaultColor='linear-gradient(135deg, #3b82f6, #8b5cf6)'
+									Component={ColorControl}
+									{...premiumProps}
+								/>
 							</>
 						}
 
@@ -324,6 +409,10 @@ const Settings = ({ attributes, setAttributes, updateList, activeIndex, setActiv
 
 			<AlignmentToolbar value={position} onChange={val => setAttributes({ position: val })} describedBy={__('Content Position')} />
 		</BlockControls>
+
+		<AboutProModal isProModalOpen={isProModalOpen} setIsProModalOpen={setIsProModalOpen} link='https://bplugins.com/products/advance-custom-html/#pricing'>
+			<li>&emsp;<strong>{__('Embed The Code: ', 'custom-html')}</strong>{__('Embed the code to frontend.', 'custom-html')}</li>
+		</AboutProModal>
 	</>;
 };
 export default Settings;

@@ -4,7 +4,7 @@ import { FaExternalLinkAlt } from '../../utils/icons';
 const Themes = ({ attributes, list, textEl, desEl, featureDesEl, badgeTitle, link, theme5TextSl, theme5DesSl }) => {
 	const { themes, themeOptions } = attributes;
 	const { theme } = themes;
-	const { rightIconColor, isBadge } = themeOptions;
+	const { rightIconColor, isBadge, isUrlIcon } = themeOptions;
 
 	const { icon } = list;
 
@@ -24,8 +24,9 @@ const Themes = ({ attributes, list, textEl, desEl, featureDesEl, badgeTitle, lin
 					{textEl}
 					{desEl}
 				</div>
+
 				{
-					link && <FaExternalLinkAlt color={rightIconColor} />
+					isUrlIcon && link ? <FaExternalLinkAlt color={rightIconColor} /> : null
 				}
 			</>
 
