@@ -2,7 +2,7 @@ import Themes from '../Common/Themes';
 import { prefix } from '../../utils/data';
 
 const IconList = ({ attributes }) => {
-	const { isTitle, title, isDesc, desc, lists, isListLinkInNewTab, position, isHeaderSep, themes, featureTitle } = attributes;
+	const { isTitle, title, isDesc, desc, lists, isListLinkInNewTab, position, isHeaderSep, themes } = attributes;
 	const { theme = 'default' } = themes;
 	return <>
 		<div className={`${prefix} ${position}`}>
@@ -19,24 +19,24 @@ const IconList = ({ attributes }) => {
 			{
 				'theme3' === theme && <>
 					{
-						isTitle && <p className='featureHeader' dangerouslySetInnerHTML={{ __html: featureTitle }} />
+						isTitle && <p className='featureHeader' dangerouslySetInnerHTML={{ __html: title }} />
 					}
 				</>
 			}
 
 			<ul className={`lists ${theme}`}>
 				{lists?.map((list, index) => {
-					const { text, link, des, featureDes, badgeTitle, theme5Text, theme5Des } = list;
+					const { text, link, des, badgeTitle } = list;
 
 					const textEl = 'theme2' === theme ? <h3 className='text' dangerouslySetInnerHTML={{ __html: text }} /> : <p className='text' dangerouslySetInnerHTML={{ __html: text }} />
 
 					const desEl = <p className='description' dangerouslySetInnerHTML={{ __html: des }} />
 
-					const featureDesEl = <p className='featureDescription' dangerouslySetInnerHTML={{ __html: featureDes }} />
+					const featureDesEl = <p className='featureDescription' dangerouslySetInnerHTML={{ __html: text }} />
 
-					const theme5TextSl = <h3 className='card-title' dangerouslySetInnerHTML={{ __html: theme5Text }} />
+					const theme5TextSl = <h3 className='card-title' dangerouslySetInnerHTML={{ __html: text }} />
 
-					const theme5DesSl = <p className='card-description' dangerouslySetInnerHTML={{ __html: theme5Des }} />
+					const theme5DesSl = <p className='card-description' dangerouslySetInnerHTML={{ __html: des }} />
 
 					return <LinkChecker key={index} {...{ link, isListLinkInNewTab }}>
 						<li className='list'>

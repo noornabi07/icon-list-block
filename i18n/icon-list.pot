@@ -9,15 +9,15 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2024-11-24T09:03:55+00:00\n"
+"POT-Creation-Date: 2024-11-25T12:41:43+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.10.0\n"
 "X-Domain: icon-list\n"
 
 #. Plugin Name of the plugin
 #: D:\Ampps\www\wordpress1\wp-content\plugins\icon-list-block-pro\index.php
-#: index.php:138
-#: index.php:139
+#: index.php:142
+#: index.php:143
 msgid "Icon List Block"
 msgstr ""
 
@@ -36,12 +36,36 @@ msgstr ""
 msgid "https://bplugins.com"
 msgstr ""
 
-#: index.php:150
-msgid "Icon List Tools"
+#: build/admin-help.js:1
+msgid "Default"
 msgstr ""
 
-#: index.php:151
-msgid "Welcome to the Icon List Tools submenu!"
+#: build/admin-help.js:1
+msgid "Theme 1"
+msgstr ""
+
+#: build/admin-help.js:1
+msgid "Theme 2"
+msgstr ""
+
+#: build/admin-help.js:1
+msgid "Left"
+msgstr ""
+
+#: build/admin-help.js:1
+msgid "Center"
+msgstr ""
+
+#: build/admin-help.js:1
+msgid "Right"
+msgstr ""
+
+#: build/admin-help.js:1
+msgid "General"
+msgstr ""
+
+#: build/admin-help.js:1
+msgid "Style"
 msgstr ""
 
 #: build/block.json
